@@ -45,7 +45,9 @@ SRCS = main.cpp \
 	parsing/Server.cpp \
        parsing/Location.cpp \
         webserv.cpp Request.cpp \
-        ft_errors.cpp
+        ft_errors.cpp \
+       parsingBridge.cpp \
+        webservutils.cpp \
 
 OBJS = $(SRCS:.cpp=.o)
 

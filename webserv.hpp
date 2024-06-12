@@ -6,7 +6,7 @@
 /*   By: sbellafr <sbellafr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:20:38 by sbellafr          #+#    #+#             */
-/*   Updated: 2024/06/07 20:49:31 by sbellafr         ###   ########.fr       */
+/*   Updated: 2024/06/12 12:15:57 by sbellafr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,34 +26,7 @@
 #include <fcntl.h>
 #include <vector>
 #include "Request.hpp"
-
-
-class Request;
-class webserv
-{
-private:
-	int port;
-	int ser_fd;
-	std::string address;
-	struct sockaddr_in addr;
-	
-
-public:
-	webserv(int port, std::string address);
-	~webserv();
-	int get_port();
-	std::string get_address();
-	int get_ser_fd();
-	void socket_create();
-	struct sockaddr_in& addr_get();
-	
-};
-
-class converter
-{
-public:
-	static void copy_from_file(std::string &bufferprint, std::string &filename);
-};
+#include "parsing/ParseConfig.hpp"
 typedef struct Client
 {
 	std::string buffer;
@@ -67,11 +40,43 @@ typedef struct Client
 	int count;
 	int total_sent;
 	std::string response;
-	    time_t last_active;
-		std::string request;
+	time_t last_active;
+	std::string request;
 		
 
 
 } Clients;
+
+class Request;
+class webserv
+{
+private:
+	int port;
+	int ser_fd;
+	std::string address;
+	struct sockaddr_in addr;
+	
+
+public:
+	webserv(int port, std::string address);
+	webserv();
+	~webserv();
+	int get_port();
+	std::string get_address();
+	int get_ser_fd();
+	void socket_create();
+	struct sockaddr_in& addr_get();
+	void	processClient(std::vector<Clients> &clients, fd_set &write_fd_set, int i, ParseConfig &Config);
+	void	handleClientRequest(Request &request, std::vector<webserv> &server, std::vector<Clients> &clients, int &max, fd_set &read_fd_set, fd_set &write_fd_set, int i, bool &chunked_finished);
+	
+
+	
+};
+
+
+int send_http_request(int client_fd, ParseConfig &config, std::string http_request, int recv_value);
 void ft_errors(int select_fd);
+bool check_chunked(std::string buffer);
+int send_http_request(int client_fd, ParseConfig &config, std::string http_request, int recv_value);
+void perfect_server();
 #endif
